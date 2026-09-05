@@ -40,26 +40,26 @@ export function Feed({ initialPosts }: { initialPosts: Post[] }) {
   return (
     <div className="flex flex-col gap-6">
       <Composer onSubmit={handlePost} disabled={!!pending} />
-      {error && <p className="text-sm text-rose-500">{error}</p>}
+      {error && <p className="text-sm text-[#160042]">{error}</p>}
       <div className="flex flex-col gap-4">
         {pending && (
-          <article className="animate-pulse rounded-2xl border border-black/5 bg-white/70 p-5 shadow-sm dark:border-white/10 dark:bg-white/5">
+          <article className="animate-pulse rounded-2xl border border-black bg-white p-6">
             {pending.imageDataUrl && (
               // eslint-disable-next-line @next/next/no-img-element -- transient in-memory data URL preview
               <img
                 src={pending.imageDataUrl}
                 alt=""
-                className="mb-3 max-h-64 w-full rounded-xl object-cover"
+                className="mb-3 max-h-64 w-full rounded-xl border border-black object-cover"
               />
             )}
             {pending.text && (
-              <p className="whitespace-pre-wrap text-base leading-relaxed">{pending.text}</p>
+              <p className="whitespace-pre-wrap text-base leading-relaxed text-black">{pending.text}</p>
             )}
-            <p className="mt-3 text-sm text-neutral-400">warming up the crowd…</p>
+            <p className="mt-3 text-sm text-black/60">warming up the crowd…</p>
           </article>
         )}
         {posts.length === 0 && !pending && (
-          <p className="py-12 text-center text-sm text-neutral-400">
+          <p className="py-12 text-center text-sm italic text-black/60">
             Nothing here yet. Say something — they&rsquo;re waiting.
           </p>
         )}

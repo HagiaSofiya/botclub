@@ -53,7 +53,7 @@ export function Composer({
   }
 
   return (
-    <div className="rounded-2xl border border-black/5 bg-white/70 p-4 shadow-sm dark:border-white/10 dark:bg-white/5">
+    <div className="rounded-2xl border border-black bg-white p-5">
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}
@@ -63,18 +63,22 @@ export function Composer({
         placeholder="Say something..."
         rows={3}
         disabled={disabled}
-        className="w-full resize-none bg-transparent text-base outline-none placeholder:text-neutral-400 disabled:opacity-60"
+        className="w-full resize-none bg-transparent text-base outline-none placeholder:text-black/40 disabled:opacity-60"
       />
 
       {imageDataUrl && (
         <div className="relative mt-3 inline-block">
           {/* eslint-disable-next-line @next/next/no-img-element -- transient client-side preview of an in-memory data URL, not an optimizable asset */}
-          <img src={imageDataUrl} alt="Attached" className="max-h-48 rounded-xl object-cover" />
+          <img
+            src={imageDataUrl}
+            alt="Attached"
+            className="max-h-48 rounded-xl border border-black object-cover"
+          />
           <button
             type="button"
             onClick={() => setImageDataUrl(undefined)}
             aria-label="Remove image"
-            className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-black/70 text-xs text-white hover:bg-black/90"
+            className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-black text-xs text-white hover:bg-black/80"
           >
             ✕
           </button>
@@ -82,7 +86,7 @@ export function Composer({
       )}
 
       <div className="mt-3">
-        <div className="flex items-center justify-between text-xs text-neutral-500 dark:text-neutral-400">
+        <div className="flex items-center justify-between text-xs text-black/70">
           <span>🙂 {100 - negativePercent}% positive</span>
           <span>{negativePercent}% negative 🙁</span>
         </div>
@@ -95,11 +99,11 @@ export function Composer({
           onChange={(e) => setNegativePercent(Number(e.target.value))}
           disabled={disabled}
           aria-label="Negative comment percentage"
-          className="mt-1 w-full accent-indigo-500 disabled:opacity-60"
+          className="mt-1 w-full accent-[#99ffcc] disabled:opacity-60"
         />
       </div>
 
-      {error && <p className="mt-2 text-xs text-rose-500">{error}</p>}
+      {error && <p className="mt-2 text-xs text-[#160042]">{error}</p>}
 
       <div className="mt-2 flex items-center justify-end gap-2">
         <button
@@ -107,7 +111,7 @@ export function Composer({
           onClick={() => fileInputRef.current?.click()}
           disabled={disabled}
           aria-label="Attach photo"
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-black/10 text-neutral-500 transition hover:bg-black/5 disabled:cursor-not-allowed disabled:opacity-50 dark:border-white/15 dark:text-neutral-400 dark:hover:bg-white/10"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-black text-black transition hover:bg-black/5 disabled:cursor-not-allowed disabled:opacity-50"
         >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-4.5 w-4.5">
             <path
@@ -129,7 +133,7 @@ export function Composer({
           type="button"
           onClick={handleSubmit}
           disabled={disabled || (!text.trim() && !imageDataUrl)}
-          className="rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
+          className="rounded-xl border border-black bg-[#99ffcc] px-5 py-2 text-sm font-bold text-black transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {disabled ? "Posting…" : "Post"}
         </button>

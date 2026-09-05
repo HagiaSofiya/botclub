@@ -29,20 +29,20 @@ export function CommentList({ comments }: { comments: VisibleComment[] }) {
   }, []);
 
   if (comments.length === 0) {
-    return <p className="text-sm italic text-neutral-400">no comments yet...</p>;
+    return <p className="text-sm italic text-black/50">no comments yet...</p>;
   }
 
   return (
     <ul className="flex flex-col gap-4">
-      {comments.map((comment) => (
+      {[...comments].reverse().map((comment) => (
         <li key={comment.id} className="flex items-start gap-3 animate-[fadeIn_0.3s_ease-out]">
           <Avatar username={comment.username} size={32} />
           <div className="min-w-0">
-            <p className="text-sm leading-snug">
-              <span className="font-semibold">{comment.username}</span>{" "}
+            <p className="text-sm leading-snug text-black">
+              <span className="font-bold">{comment.username}</span>{" "}
               <span className="whitespace-pre-wrap">{comment.text}</span>
             </p>
-            <p className="mt-0.5 text-xs text-neutral-400">
+            <p className="mt-0.5 text-xs text-black/50">
               {formatRelativeTime(now - comment.appearedAt)}
             </p>
           </div>

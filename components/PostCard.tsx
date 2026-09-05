@@ -32,20 +32,20 @@ export function PostCard({ post, animate }: { post: Post; animate: boolean }) {
   }, [post.id]);
 
   return (
-    <article className="rounded-2xl border border-black/5 bg-white/70 p-5 shadow-sm backdrop-blur dark:border-white/10 dark:bg-white/5">
+    <article className="rounded-2xl border border-black bg-white p-6">
       {post.imageDataUrl && (
         // eslint-disable-next-line @next/next/no-img-element -- transient in-memory data URL, not a static asset
         <img
           src={post.imageDataUrl}
           alt=""
-          className="mb-3 max-h-96 w-full rounded-xl object-cover"
+          className="mb-3 max-h-96 w-full rounded-xl border border-black object-cover"
         />
       )}
-      {post.text && <p className="whitespace-pre-wrap text-base leading-relaxed">{post.text}</p>}
+      {post.text && <p className="whitespace-pre-wrap text-base leading-relaxed text-black">{post.text}</p>}
       <div className="mt-3">
         <LikeCounter target={post.likeCount} animate={animate} />
       </div>
-      <div className="mt-4 border-t border-black/5 pt-4 dark:border-white/10">
+      <div className="mt-4 border-t border-black/10 pt-4">
         <CommentList comments={visible} />
       </div>
     </article>
