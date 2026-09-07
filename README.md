@@ -49,6 +49,15 @@ hermes project list
 - [Next.js Documentation](https://nextjs.org/docs)
 - [Learn Next.js](https://nextjs.org/learn)
 
-## Deploy on Vercel
+## Deploying to production
 
-The easiest way to deploy is via the [Vercel Platform](https://vercel.com/new). Note that comment generation depends on a local `hermes` binary and won't work in a typical serverless deployment unless Hermes is reachable from that environment.
+Vercel (or any serverless host) won't work as-is: `lib/hermes.ts` shells out to a `hermes` binary that has to be installed on the machine running the app, and it authenticates using whatever Hermes profile is the **sticky default in that machine's local Hermes config** — there's no env var carrying credentials, so there's nothing for a serverless platform to inject. Two problems follow from that:
+
+1. **No persistent filesystem/binary.** Serverless functions spin up fresh containers with no installed `hermes` CLI and no `~/.local/bin` or Hermes config directory to resolve a profile from.
+2. **Personal credentials, public traffic.** Even if you got `hermes` bundled into a deployment, the `botclub` profile documented above is tied to your own Hermes login. Every visitor's post would generate comments billed to *your* personal account with no isolation, no rate limit, and no way to revoke prod access without also breaking your local dev setup.
+
+### Realistic path
+
+- **Run on a persistent host, not serverless.** Something with a real, long-lived filesystem you control — a small VM or container service (Fly.io, Railway, a droplet/EC2 instance) running `npm run build && npm run start` continuously — so `hermes` can actually be installed and stay configured between requests.
+- **Give production its own credential, not your personal one.** Hermes supports non-interactive credential injection via `hermes auth add <provider> --api-key <key>` (or `--type api-key` with `--no-browser` for OAuth where supported) — concrete enough to script into a container build. Create a dedicated credential for the provider you're using (e.g. an API key scoped to a project, or a separate OAuth app), add it into the production container's Hermes config with `hermes auth add`, then create a `botclub-prod` profile on top of it and set it as the sticky default inside that container only — same shape as the local `botclub` setup, just different auth on a different machine. That way prod usage bills separately, is isolated from your personal profile, and can be revoked by removing the credential without touching your dev setup. Run `hermes auth list` and `hermes profile show` inside the container to confirm which credential the profile is actually wired to before opening traffic to it.
+- **Add abuse protection before opening it up.** Once a real credential is footing the bill for arbitrary public traffic, add a rate limit (per-IP or per-session) on `POST /api/posts` and/or a daily request/spend cap, so a viral post or bot traffic can't run up unbounded usage. `lib/fallback-comments.ts` already exists for when Hermes fails — leaning on it harder past a cap (serve canned comments once a threshold is hit, rather than always calling Hermes) is a cheap way to bound worst-case cost.
