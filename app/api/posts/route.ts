@@ -6,7 +6,7 @@ import { randomUUID } from "node:crypto";
 import { computeLikeCount } from "@/lib/likes";
 import { samplePersonas } from "@/lib/personas";
 import { generateComments } from "@/lib/hermes";
-import { IMAGE_EXTENSION_BY_MIME, MAX_IMAGE_BYTES } from "@/lib/images";
+import { IMAGE_EXTENSION_BY_MIME, MAX_IMAGE_BYTES, parseDataUrl } from "@/lib/images";
 import { addPost } from "@/lib/store";
 import type { Comment, Post } from "@/lib/types";
 
@@ -26,8 +26,8 @@ export async function POST(request: Request) {
   if (!text && !imageDataUrl) {
     return Response.json({ error: "Post text or an image is required." }, { status: 400 });
   }
-  const mimeMatch = imageDataUrl?.match(/^data:([^;]+);base64,/);
-  if (imageDataUrl && (!mimeMatch || !(mimeMatch[1] in IMAGE_EXTENSION_BY_MIME))) {
+  const parsedImage = imageDataUrl ? parseDataUrl(imageDataUrl) : null;
+  if (imageDataUrl && (!parsedImage || !(parsedImage.mime in IMAGE_EXTENSION_BY_MIME))) {
     return Response.json({ error: "Unsupported image format." }, { status: 400 });
   }
   if (imageDataUrl && imageDataUrl.length * 0.75 > MAX_IMAGE_BYTES) {

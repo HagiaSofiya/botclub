@@ -1,19 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { ACCENT_MINT, ACCENT_PINK, ACCENT_SKY } from "@/lib/avatar";
+import { useTriggerFlash } from "@/lib/useTriggerFlash";
 
 export function Mascot({ winkTrigger }: { winkTrigger?: number }) {
-  const [winking, setWinking] = useState(false);
-
-  useEffect(() => {
-    if (winkTrigger === undefined) return;
-    // Flash the wink immediately when triggered, then clear it after 900ms.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setWinking(true);
-    const t = setTimeout(() => setWinking(false), 900);
-    return () => clearTimeout(t);
-  }, [winkTrigger]);
+  const winking = useTriggerFlash(winkTrigger);
 
   return (
     <div className="relative h-[72px] w-[72px] shrink-0 self-start" aria-hidden="true">

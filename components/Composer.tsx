@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState, type ChangeEvent } from "react";
+import { useRef, useState, type ChangeEvent } from "react";
 import { ACCENT_MINT, ACCENT_PEACH, ACCENT_PINK, ACCENT_SKY } from "@/lib/avatar";
 import { MAX_IMAGE_BYTES } from "@/lib/images";
+import { useTriggerFlash } from "@/lib/useTriggerFlash";
 import { Card } from "./Card";
 
 export interface ComposerSubmission {
@@ -22,17 +23,8 @@ export function Composer({
   const [text, setText] = useState("");
   const [imageDataUrl, setImageDataUrl] = useState<string | undefined>(undefined);
   const [error, setError] = useState<string | null>(null);
-  const [popping, setPopping] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (winkTrigger === undefined) return;
-    // Pop the confetti dots when a post lands, echoing the mascot's wink.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setPopping(true);
-    const t = setTimeout(() => setPopping(false), 900);
-    return () => clearTimeout(t);
-  }, [winkTrigger]);
+  const popping = useTriggerFlash(winkTrigger);
 
   function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];

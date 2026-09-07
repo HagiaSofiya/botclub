@@ -10,7 +10,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { promisify } from "node:util";
 import { FALLBACK_COMMENTS, FALLBACK_NEGATIVE_COMMENTS } from "./fallback-comments";
-import { IMAGE_EXTENSION_BY_MIME } from "./images";
+import { IMAGE_EXTENSION_BY_MIME, parseDataUrl } from "./images";
 
 const execFileAsync = promisify(execFile);
 
@@ -29,15 +29,14 @@ function resolveHermesBin(): string {
  * duration of one Hermes call and is cleaned up by the caller.
  */
 async function writeTempImage(imageDataUrl: string): Promise<string | null> {
-  const match = imageDataUrl.match(/^data:(image\/[a-zA-Z+]+);base64,(.+)$/);
-  if (!match) return null;
-  const [, mime, base64] = match;
-  const extension = IMAGE_EXTENSION_BY_MIME[mime];
+  const parsed = parseDataUrl(imageDataUrl);
+  if (!parsed) return null;
+  const extension = IMAGE_EXTENSION_BY_MIME[parsed.mime];
   if (!extension) return null;
 
   const dir = await mkdtemp(join(tmpdir(), "botnet-image-"));
   const path = join(dir, `photo.${extension}`);
-  await writeFile(path, Buffer.from(base64, "base64"));
+  await writeFile(path, Buffer.from(parsed.base64, "base64"));
   return path;
 }
 
