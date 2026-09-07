@@ -3,11 +3,13 @@
 :root {
   --background: #f5f4f0;
   --foreground: #000000;
+  color-scheme: light;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-error: #160042;
   --font-sans: var(--font-lota);
   --font-serif: var(--font-recoleta);
 }
@@ -16,6 +18,64 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+/* Custom range-input styling: `--accent-mint` and `--range-percent` are supplied inline
+   by the component so the fill color/position stay driven by its own state and the
+   shared ACCENT_MINT constant, rather than being duplicated here. */
+.sentiment-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 18px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.sentiment-slider::-webkit-slider-runnable-track {
+  box-sizing: border-box;
+  height: 8px;
+  border-radius: 9999px;
+  border: 1px solid var(--foreground);
+  background: linear-gradient(to right, var(--accent-mint) var(--range-percent), #ffffff var(--range-percent));
+}
+
+.sentiment-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  box-sizing: border-box;
+  width: 18px;
+  height: 18px;
+  margin-top: -5px;
+  border-radius: 9999px;
+  background: var(--accent-mint);
+  border: 2px solid var(--foreground);
+  cursor: pointer;
+}
+
+.sentiment-slider::-moz-range-track {
+  box-sizing: border-box;
+  height: 8px;
+  border-radius: 9999px;
+  border: 1px solid var(--foreground);
+  background: #ffffff;
+}
+
+.sentiment-slider::-moz-range-progress {
+  box-sizing: border-box;
+  height: 8px;
+  border-radius: 9999px;
+  background: var(--accent-mint);
+}
+
+.sentiment-slider::-moz-range-thumb {
+  box-sizing: border-box;
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  background: var(--accent-mint);
+  border: 2px solid var(--foreground);
+  cursor: pointer;
 }
 
 @keyframes fadeIn {

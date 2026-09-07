@@ -1,27 +1,38 @@
 "use client";
 
-import { useRef, useState, type ChangeEvent } from "react";
-
-const MAX_IMAGE_BYTES = 8 * 1024 * 1024;
+import { useEffect, useRef, useState, type ChangeEvent } from "react";
+import { ACCENT_MINT, ACCENT_PEACH, ACCENT_PINK, ACCENT_SKY } from "@/lib/avatar";
+import { MAX_IMAGE_BYTES } from "@/lib/images";
+import { Card } from "./Card";
 
 export interface ComposerSubmission {
   text: string;
   imageDataUrl?: string;
-  negativePercent: number;
 }
 
 export function Composer({
   onSubmit,
   disabled,
+  winkTrigger,
 }: {
   onSubmit: (input: ComposerSubmission) => void;
   disabled?: boolean;
+  winkTrigger?: number;
 }) {
   const [text, setText] = useState("");
   const [imageDataUrl, setImageDataUrl] = useState<string | undefined>(undefined);
-  const [negativePercent, setNegativePercent] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const [popping, setPopping] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (winkTrigger === undefined) return;
+    // Pop the confetti dots when a post lands, echoing the mascot's wink.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setPopping(true);
+    const t = setTimeout(() => setPopping(false), 900);
+    return () => clearTimeout(t);
+  }, [winkTrigger]);
 
   function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
@@ -46,14 +57,33 @@ export function Composer({
   function handleSubmit() {
     const trimmed = text.trim();
     if ((!trimmed && !imageDataUrl) || disabled) return;
-    onSubmit({ text: trimmed, imageDataUrl, negativePercent });
+    onSubmit({ text: trimmed, imageDataUrl });
     setText("");
     setImageDataUrl(undefined);
-    setNegativePercent(0);
   }
 
   return (
-    <div className="rounded-2xl border border-black bg-white p-5">
+    <Card className="relative">
+      <div
+        className="absolute -top-2 left-7 h-2.5 w-2.5 rounded-full transition-transform duration-200"
+        style={{ backgroundColor: ACCENT_PINK, transform: popping ? "scale(1.6)" : "scale(1)" }}
+        aria-hidden="true"
+      />
+      <div
+        className="absolute -top-2.5 left-[70px] h-1.5 w-1.5 rounded-full transition-transform duration-200"
+        style={{ backgroundColor: ACCENT_SKY, transform: popping ? "scale(1.6)" : "scale(1)" }}
+        aria-hidden="true"
+      />
+      <div
+        className="absolute -top-1.5 right-[50px] h-2 w-2 rounded-full transition-transform duration-200"
+        style={{ backgroundColor: ACCENT_PEACH, transform: popping ? "scale(1.6)" : "scale(1)" }}
+        aria-hidden="true"
+      />
+      <div
+        className="absolute -top-3 right-5 h-1.5 w-1.5 rounded-full transition-transform duration-200"
+        style={{ backgroundColor: ACCENT_MINT, transform: popping ? "scale(1.6)" : "scale(1)" }}
+        aria-hidden="true"
+      />
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}
@@ -63,7 +93,7 @@ export function Composer({
         placeholder="Say something..."
         rows={3}
         disabled={disabled}
-        className="w-full resize-none bg-transparent text-base outline-none placeholder:text-black/40 disabled:opacity-60"
+        className="w-full resize-none bg-transparent text-base outline-none placeholder:text-foreground/40 disabled:opacity-60"
       />
 
       {imageDataUrl && (
@@ -72,38 +102,20 @@ export function Composer({
           <img
             src={imageDataUrl}
             alt="Attached"
-            className="max-h-48 rounded-xl border border-black object-cover"
+            className="max-h-48 rounded-xl border border-foreground object-cover"
           />
           <button
             type="button"
             onClick={() => setImageDataUrl(undefined)}
             aria-label="Remove image"
-            className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-black text-xs text-white hover:bg-black/80"
+            className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-foreground text-xs text-white hover:bg-foreground/80"
           >
             ✕
           </button>
         </div>
       )}
 
-      <div className="mt-3">
-        <div className="flex items-center justify-between text-xs text-black/70">
-          <span>🙂 {100 - negativePercent}% positive</span>
-          <span>{negativePercent}% negative 🙁</span>
-        </div>
-        <input
-          type="range"
-          min={0}
-          max={100}
-          step={5}
-          value={negativePercent}
-          onChange={(e) => setNegativePercent(Number(e.target.value))}
-          disabled={disabled}
-          aria-label="Negative comment percentage"
-          className="mt-1 w-full accent-[#99ffcc] disabled:opacity-60"
-        />
-      </div>
-
-      {error && <p className="mt-2 text-xs text-[#160042]">{error}</p>}
+      {error && <p className="mt-2 text-xs text-error">{error}</p>}
 
       <div className="mt-2 flex items-center justify-end gap-2">
         <button
@@ -111,7 +123,7 @@ export function Composer({
           onClick={() => fileInputRef.current?.click()}
           disabled={disabled}
           aria-label="Attach photo"
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-black text-black transition hover:bg-black/5 disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-foreground text-foreground transition hover:bg-foreground/5 disabled:cursor-not-allowed disabled:opacity-50"
         >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-4.5 w-4.5">
             <path
@@ -133,11 +145,12 @@ export function Composer({
           type="button"
           onClick={handleSubmit}
           disabled={disabled || (!text.trim() && !imageDataUrl)}
-          className="rounded-xl border border-black bg-[#99ffcc] px-5 py-2 text-sm font-bold text-black transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-50"
+          className="rounded-xl border border-foreground px-5 py-2 text-sm font-bold text-foreground transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-50"
+          style={{ backgroundColor: ACCENT_MINT }}
         >
           {disabled ? "Posting…" : "Post"}
         </button>
       </div>
-    </div>
+    </Card>
   );
 }

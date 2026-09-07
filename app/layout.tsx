@@ -28,10 +28,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col bg-[#f5f4f0]">
         <header className="sticky top-0 z-10 border-b border-black/10 bg-[#f5f4f0]">
           <div className="mx-auto flex w-full max-w-2xl items-center justify-center px-4 py-3">
-            <span
-              className="text-2xl font-bold text-black"
-              style={{ fontFamily: "var(--font-recoleta)", letterSpacing: "-0.028em" }}
-            >
+            <span className="font-serif text-2xl font-bold text-foreground tracking-[-0.028em]">
               bot club
             </span>
           </div>

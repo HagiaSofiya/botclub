@@ -10,17 +10,11 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { promisify } from "node:util";
 import { FALLBACK_COMMENTS, FALLBACK_NEGATIVE_COMMENTS } from "./fallback-comments";
+import { IMAGE_EXTENSION_BY_MIME } from "./images";
 
 const execFileAsync = promisify(execFile);
 
 const KNOWN_HERMES_PATH = "/Users/sofiyashrayber/.local/bin/hermes";
-
-const EXTENSION_BY_MIME: Record<string, string> = {
-  "image/png": "png",
-  "image/jpeg": "jpg",
-  "image/gif": "gif",
-  "image/webp": "webp",
-};
 
 function resolveHermesBin(): string {
   if (process.env.HERMES_BIN) return process.env.HERMES_BIN;
@@ -38,7 +32,7 @@ async function writeTempImage(imageDataUrl: string): Promise<string | null> {
   const match = imageDataUrl.match(/^data:(image\/[a-zA-Z+]+);base64,(.+)$/);
   if (!match) return null;
   const [, mime, base64] = match;
-  const extension = EXTENSION_BY_MIME[mime];
+  const extension = IMAGE_EXTENSION_BY_MIME[mime];
   if (!extension) return null;
 
   const dir = await mkdtemp(join(tmpdir(), "botnet-image-"));

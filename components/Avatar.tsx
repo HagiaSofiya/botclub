@@ -5,7 +5,7 @@ export function Avatar({ username, size = 36 }: { username: string; size?: numbe
 
   return (
     <div
-      className="flex shrink-0 select-none items-center justify-center rounded-full border border-black font-bold text-black"
+      className="flex shrink-0 select-none items-center justify-center rounded-full border border-foreground font-bold text-foreground"
       style={{
         width: size,
         height: size,

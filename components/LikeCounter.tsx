@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { ACCENT_PINK } from "@/lib/avatar";
 
 function easeOutCubic(t: number): number {
   return 1 - Math.pow(1 - t, 3);
@@ -15,7 +16,7 @@ export function LikeCounter({ target, animate }: { target: number; animate: bool
     // above, so there's nothing to synchronize here.
     if (!animate) return;
 
-    const duration = 2500 + Math.random() * 1500;
+    const duration = 1000 + Math.random() * 500;
     const start = performance.now();
 
     function tick(now: number) {
@@ -38,15 +39,15 @@ export function LikeCounter({ target, animate }: { target: number; animate: bool
     <div className="flex items-center gap-2">
       <svg
         viewBox="0 0 24 24"
-        fill="#ff99cc"
+        fill={ACCENT_PINK}
         className={`h-5 w-5 shrink-0 ${isCounting ? "animate-pulse" : ""}`}
       >
         <path d="M12 21s-6.7-4.35-9.3-8.2C.86 9.94 1.6 6.3 4.6 4.9c2.2-1.03 4.6-.24 6 1.6 1.4-1.84 3.8-2.63 6-1.6 3 1.4 3.74 5.04 1.9 7.9C18.7 16.65 12 21 12 21z" />
       </svg>
-      <span className="text-lg font-bold tabular-nums text-black">
+      <span className="text-lg font-bold tabular-nums text-foreground">
         {value.toLocaleString()}
       </span>
-      <span className="text-sm text-black/60">likes</span>
+      <span className="text-sm text-foreground/60">likes</span>
     </div>
   );
 }

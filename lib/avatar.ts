@@ -2,7 +2,12 @@
 // from a hash of the username. No network calls, no real photos — these are fake bot
 // accounts, so there's no person whose likeness should stand in for them.
 
-const AVATAR_COLORS: string[] = ["#99ffcc", "#7bbbff", "#ffcc99", "#ff99cc"];
+export const ACCENT_MINT = "#99ffcc";
+export const ACCENT_SKY = "#7bbbff";
+export const ACCENT_PEACH = "#ffcc99";
+export const ACCENT_PINK = "#ff99cc";
+
+const AVATAR_COLORS: string[] = [ACCENT_MINT, ACCENT_SKY, ACCENT_PEACH, ACCENT_PINK];
 
 function hashString(input: string): number {
   let hash = 0;
